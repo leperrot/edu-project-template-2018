@@ -17,7 +17,7 @@ class Yolo extends Component {
 
 class Swag extends Component {
     render() {
-        return(<h1>Swag</h1>);
+        return(<h1>Alexis le technicien de surface</h1>);
     }
 };
 
