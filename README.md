@@ -19,3 +19,6 @@
 * [node-uuid](https://www.npmjs.com/package/node-uuid)
 * [frisby](https://www.npmjs.com/package/frisby)
 * [node-find-files](https://www.npmjs.com/package/node-find-files)
+
+Léandre PERROT leandre.perrot@etu.uca.fr
+Alexis ROBERT alexis.robert@etu.uca.fr
