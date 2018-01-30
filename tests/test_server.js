@@ -3,11 +3,9 @@ const path = require('path');
 const sys = require("util");
 const fs = require('fs');
 
-const port = 4598;
+const port = 5647;
 
 const pathData = path.join(__dirname, 'server/data');
-
-fs.mkdir(pathData);
 
 const server = child_process.spawn(
     'node',
