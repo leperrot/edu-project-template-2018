@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const uuid = require("node-uuid");
 var fs = require('fs');
 
+const dal = require('./dal.js');
+
 var app = express();
 
 app.use(bodyParser.json());
@@ -14,10 +16,13 @@ episodes.post('/', function(request, response){
     let episode = request.body;
     if(episode) {
         episode.id = uuid.v4();
-        fs.writeFile(config.data+'/'+episode.id+'.json',JSON.stringify(episode), "UTF-8", function(err){
-            if (err) throw err;
-        });
-        response.send(episode);
+        dal.insert(episode)
+            .then((res) => {
+                response.send(episode);
+            })
+            .catch((err) => {
+                response.sendStatus(400);
+            });
     }
     else response.sendStatus(400);
 });
@@ -25,41 +30,36 @@ episodes.post('/', function(request, response){
 episodes.get('/:id', function(request, response){
     let episode = {};
     let id = request.params.id;
-
-    fs.readFile(config.data+'/'+id+".json", "UTF-8", function(err, data){
-        if(err){
+    dal.find(id)
+        .then((data) => {
+            response.send(data);
+        })
+        .catch((err) => {
             response.sendStatus(404);
-        }
-        episode = data;
-        response.send(episode);
-    });
+        });
 });
 
 episodes.get('/', function(request, response){
     let episodes = [];
-    fs.readdir(config.data, function(error, files){
-        if(error){
-            throw error;
-        }
-        files.forEach(function(file){
-            fs.readFile(config.data+'/'+file, "UTF-8", function(err, data){
-                if (err) {
-                    throw err;
-                }
-                episodes.push(JSON.parse(data));
-            });
+    dal.findAll()
+        .then((data) => {
+            response.send(data);
+        })
+        .catch((err) => {
+            response.sendStatus(400);
         });
-    });
-    response.send(episodes);
 });
 
 episodes.put('/:id', function(request, response){
     let episode = request.body;
     if(episode){
-        fs.writeFile(config.data+'/'+episode.id+'.json', JSON.stringify(episode), "UTF-8", function(err){
-            if (err) throw err;
-        });
-        response.send(episode);
+        dal.insert(episode)
+            .then((episode) => {
+                response.send(episode);
+            })
+            .catch((err) => {
+                response.sendStatus(400);
+            });
     }else {
         response.sendStatus(400);
     }
@@ -68,13 +68,13 @@ episodes.put('/:id', function(request, response){
 episodes.delete('/:id', function(request, response){
     let id = request.params.id;
     if(id){
-        fs.unlink(config.data+'/'+id+'.json', function (error) {
-            if (error) {
+        dal.remove(id)
+            .then(() => {
+                response.sendStatus(200);
+            })
+            .catch((err) => {
                 response.sendStatus(404);
-                return;
-            }
-        });
-        response.sendStatus(200);
+            });
     }else{
         response.sendStatus(400);
     }
