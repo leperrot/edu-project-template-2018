@@ -57,7 +57,7 @@ if (process.env.NODE_ENV == 'dev') {
         plugins: [
             new webpack.HotModuleReplacementPlugin()
         ],
-        devtool: "eval-source-map",
+        devtool: "source-map",
         devServer: {
           contentBase: PATHS.build,
           compress: true,
