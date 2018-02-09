@@ -70,6 +70,34 @@ class EpisodeListComponent extends Component {
     }
 }
 
+class ButtonComponent extends Component {
+
+    constructor(props){
+        super(props);
+    }
+
+    create(){
+        fetch("/api/episodes", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.props.episode)
+        }).then(function(response){
+            window.location.reload();
+        }, function(err){
+            window.location.reload();
+        });
+    }
+
+    render(){
+        return(
+            <button type="button" onClick={() => this.create()}>Watched</button>
+        );
+    }
+}
+
 class EpisodeFormComponent extends Component {
 
     constructor(props){
@@ -81,20 +109,6 @@ class EpisodeFormComponent extends Component {
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleSubmit(event){
-        fetch("/api/episodes", {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.state)
-        }).then(function(response){
-            window.location.reload();
-        });
     }
 
     handleChange(event){
@@ -109,7 +123,7 @@ class EpisodeFormComponent extends Component {
 
     render(){
         return(
-            <form method="post" onSubmit={this.handleSubmit}>
+            <form>
                 <label for="name">Serie</label>
                 <br/>
                 <input type="text" id="name" name="name" value={this.state.name} placeholder="Serie" onChange={this.handleChange}/>
@@ -122,7 +136,7 @@ class EpisodeFormComponent extends Component {
                 <br/>
                 <input type="number" id="note" name="note" min="0" max="10" value={this.state.note} onChange={this.handleChange}/>
                 <br/>
-                <input type="submit" value="Watched"/>
+                <ButtonComponent episode={this.state}/>
             </form>
         )
     }
